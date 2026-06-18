@@ -39,7 +39,12 @@
   <p class="lede">Every bar in <strong>The Climb</strong> is a real, sourced number. This page documents exactly where the data comes from, how the running totals are built, and what the known limitations are. Nothing is a black box.</p>
 
   <h2>What the charts show</h2>
-  <p>Four synchronized races track the NBA&rsquo;s <strong>all-time regular-season leaders</strong> in four counting stats. As the shared clock advances one season at a time, each bar is the player&rsquo;s <strong>cumulative career total</strong> through the end of that season. Retired players keep their final total and hold their place on the board until someone climbs past them.</p>
+  <p>Four synchronized races track the NBA&rsquo;s leaders in four stats, driven by one shared clock. A toggle switches every chart between two views:</p>
+  <ul>
+    <li><strong>Career totals</strong> &mdash; each bar is the player&rsquo;s <strong>cumulative career total</strong> through the end of that season. Retired players keep their final total and hold their place until someone climbs past them. This is the running, all-time climb.</li>
+    <li><strong>Per-game average</strong> &mdash; each bar is that <strong>single season&rsquo;s</strong> per-game average (season total &divide; games played). The board resets and reshuffles every year, so you watch who led the league each season &mdash; Wilt&rsquo;s 50.4 points a game in 1961&ndash;62, and so on.</li>
+  </ul>
+  <p>The four stats:</p>
   <ul>
     <li><span class="pill">PTS</span> Points &mdash; from the 1946&ndash;47 season</li>
     <li><span class="pill">REB</span> Total rebounds &mdash; from 1950&ndash;51</li>
@@ -57,6 +62,9 @@
     <li>A player <strong>traded mid-season</strong> appears on Basketball-Reference as one row per team plus a combined-total row (labeled <code>2TM</code>, <code>3TM</code>, or <code>TOT</code>). We keep only the combined row, so each season is counted exactly once.</li>
     <li>Totals carry forward through seasons a player did not play, so retired legends stay on the board and get chased down rather than disappearing.</li>
   </ul>
+
+  <h2>Per-game qualifier</h2>
+  <p>In the <strong>per-game average</strong> view, a player must have played enough games to appear &mdash; otherwise someone who played two games and scored 40 in one would top the chart. We require games played &ge; <strong>70% of that season&rsquo;s schedule</strong> (the schedule length is taken as the most games any player logged that year, which automatically scales to lockout- and pandemic-shortened seasons). That threshold is close in spirit to the NBA&rsquo;s own rate-stat qualification rules. Players below it are simply omitted from the average view for that season; their career totals are unaffected.</p>
 
   <h2>Verification</h2>
   <p>The computed final (2024&ndash;25) all-time totals match Basketball-Reference exactly. A few anchors:</p>

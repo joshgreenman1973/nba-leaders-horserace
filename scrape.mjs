@@ -21,7 +21,9 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function fetchSeason(year, attempt = 1) {
-  const url = `https://www.basketball-reference.com/leagues/NBA_${year}_totals.html`;
+  // 1947-1949 were the BAA, served under BAA_ URLs; 1950+ are NBA_.
+  const league = year <= 1949 ? 'BAA' : 'NBA';
+  const url = `https://www.basketball-reference.com/leagues/${league}_${year}_totals.html`;
   const res = await fetch(url, { headers: { 'User-Agent': UA, 'Accept': 'text/html' } });
   if (res.status === 429 || res.status >= 500) {
     if (attempt > 5) throw new Error(`${year}: giving up after ${attempt} tries (HTTP ${res.status})`);
@@ -63,6 +65,7 @@ function parseSeason(html, year) {
     const num = (s) => { const v = parseInt(s, 10); return Number.isFinite(v) ? v : 0; };
     const rec = {
       id, name, team,
+      g:   num(cell(row, 'games')),
       pts: num(cell(row, 'pts')),
       trb: num(cell(row, 'trb')),
       ast: num(cell(row, 'ast')),

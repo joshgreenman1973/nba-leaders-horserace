@@ -40,12 +40,21 @@
   </div>
 </section>
 
+<section class="modebar" role="group" aria-label="Measure">
+  <span class="modebar-label">Measure</span>
+  <div class="mode-toggle">
+    <button class="mode is-active" data-mode="totals">Career totals</button>
+    <button class="mode" data-mode="avg">Per&#8209;game average</button>
+  </div>
+  <span id="modeHint" class="modebar-hint">running career sum, season by season</span>
+</section>
+
 <main id="grid" class="grid">
   <!-- chart cards injected by app.js -->
 </main>
 
 <footer class="footnote">
-  <p>Bars show each player&rsquo;s <strong>running career total</strong> at the end of every season. Retired players hold their place and get chased down. A consistent color follows each athlete up the board.</p>
+  <p id="footLede">Bars show each player&rsquo;s <strong>running career total</strong> at the end of every season. Retired players hold their place and get chased down. A consistent color follows each athlete up the board.</p>
   <p class="src">Data: <a href="https://www.basketball-reference.com/" target="_blank" rel="noopener">Basketball-Reference.com</a> season totals &middot; Rebounds recorded from 1950&ndash;51, steals from 1973&ndash;74.</p>
 </footer>
 
