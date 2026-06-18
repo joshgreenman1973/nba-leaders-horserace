@@ -1,0 +1,237 @@
+/* ============================================================
+   THE CLIMB — NBA all-time leaders race
+   Aesthetic: late-night broadcast / arena jumbotron.
+   Near-black court, LED scanlines, condensed scoreboard numerals,
+   a giant shot-clock YEAR driving four synchronized races.
+   ============================================================ */
+
+:root{
+  --bg:        #07090d;
+  --bg-2:      #0c1016;
+  --panel:     #0f141c;
+  --panel-2:   #131a24;
+  --line:      #1d2734;
+  --ink:       #f4f7fb;
+  --ink-dim:   #8b97a8;
+  --ink-faint: #54606f;
+
+  --pts: #ffb01f;
+  --trb: #a06bff;
+  --ast: #2fd4c8;
+  --stl: #ff5470;
+
+  --row-h: 30px;
+  --maxw: 1480px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background:
+    radial-gradient(1200px 700px at 50% -8%, #15202e 0%, rgba(21,32,46,0) 60%),
+    radial-gradient(900px 600px at 12% 110%, #11161f 0%, rgba(17,22,31,0) 55%),
+    var(--bg);
+  color:var(--ink);
+  font-family:"Barlow Semi Condensed", system-ui, sans-serif;
+  font-weight:500;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* atmosphere overlays */
+.grain{
+  position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.scan{
+  position:fixed; inset:0; z-index:9998; pointer-events:none; opacity:.35;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.18) 2px 3px);
+  mix-blend-mode:multiply;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  max-width:var(--maxw); margin:0 auto; padding:22px 24px 6px;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:16px;
+}
+.brand{ display:flex; flex-direction:column; line-height:1; }
+.brand-mark{
+  font-family:"Saira Condensed", sans-serif; font-weight:900;
+  font-size:clamp(26px, 3.6vw, 46px); letter-spacing:.01em;
+  background:linear-gradient(180deg,#fff 0%, #c6d0dd 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 1px 0 rgba(0,0,0,.4);
+}
+.brand-sub{
+  margin-top:6px; color:var(--ink-dim); font-weight:600;
+  text-transform:uppercase; letter-spacing:.18em; font-size:11px;
+}
+.topbar-right{ display:flex; align-items:center; gap:14px; }
+.source{
+  color:var(--ink-dim); text-decoration:none; font-weight:600; font-size:13px;
+  text-transform:uppercase; letter-spacing:.08em; border-bottom:1px solid transparent;
+}
+.source:hover{ color:var(--ink); border-color:var(--ink-faint); }
+.ai-caution{
+  font-family:inherit; cursor:pointer; font-weight:700; font-size:12px;
+  text-transform:uppercase; letter-spacing:.08em;
+  color:#ffd9c2; background:#5a1d12; border:1px solid #7a2b18;
+  padding:7px 12px; border-radius:6px;
+}
+.ai-caution:hover{ background:#6d2416; }
+
+/* ---------- shot-clock ---------- */
+.clock{
+  max-width:var(--maxw); margin:10px auto 4px; padding:6px 24px 14px;
+  display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:center;
+}
+.transport{
+  font-family:inherit; cursor:pointer; color:var(--ink);
+  width:46px; height:46px; border-radius:50%;
+  background:var(--panel-2); border:1px solid var(--line);
+  font-size:15px; display:flex; align-items:center; justify-content:center;
+  flex:0 0 auto; transition:background .15s, border-color .15s, transform .1s;
+}
+.transport:hover{ background:#1a2330; border-color:#2b3a4d; }
+.transport:active{ transform:scale(.93); }
+.play{ width:54px; height:54px; font-size:14px; letter-spacing:-2px; }
+
+.year-wrap{ display:flex; flex-direction:column; align-items:center; min-width:min(560px,86vw); }
+.season{
+  font-family:"Saira Condensed",sans-serif; font-weight:700; color:var(--ink-dim);
+  letter-spacing:.32em; font-size:14px; text-transform:uppercase; margin-bottom:-4px;
+}
+.year{
+  font-family:"Saira Condensed",sans-serif; font-weight:900;
+  font-size:clamp(64px, 11vw, 128px); line-height:.9; letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+  color:#fff;
+  text-shadow:0 0 28px rgba(120,170,255,.18), 0 2px 0 rgba(0,0,0,.5);
+}
+.scrub{
+  -webkit-appearance:none; appearance:none; width:100%; height:6px; margin-top:14px;
+  background:var(--line); border-radius:6px; cursor:pointer; outline:none;
+}
+.scrub::-webkit-slider-thumb{
+  -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+  background:#fff; border:3px solid #2b3a4d; box-shadow:0 0 12px rgba(120,170,255,.4); cursor:grab;
+}
+.scrub::-moz-range-thumb{
+  width:18px; height:18px; border-radius:50%; background:#fff; border:3px solid #2b3a4d; cursor:grab;
+}
+
+.speeds{ display:flex; gap:6px; }
+.speed{
+  font-family:inherit; cursor:pointer; font-weight:700; font-size:14px;
+  color:var(--ink-dim); background:var(--panel); border:1px solid var(--line);
+  padding:9px 12px; border-radius:7px; min-width:46px; transition:.15s;
+}
+.speed:hover{ color:var(--ink); }
+.speed.is-active{ color:#0b0e13; background:var(--ink); border-color:var(--ink); }
+
+/* ---------- grid of races ---------- */
+.grid{
+  max-width:var(--maxw); margin:14px auto 0; padding:0 24px;
+  display:grid; grid-template-columns:1fr 1fr; gap:18px;
+}
+.card{
+  position:relative; background:linear-gradient(180deg,var(--panel) 0%, var(--bg-2) 100%);
+  border:1px solid var(--line); border-radius:14px; padding:16px 18px 18px;
+  overflow:hidden; opacity:0; transform:translateY(14px);
+  animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;
+}
+.card::before{ /* accent glow top-left */
+  content:""; position:absolute; left:-40px; top:-50px; width:220px; height:160px;
+  background:radial-gradient(closest-side, var(--accent) 0%, transparent 70%);
+  opacity:.14; pointer-events:none;
+}
+.card:nth-child(1){ animation-delay:.05s; }
+.card:nth-child(2){ animation-delay:.12s; }
+.card:nth-child(3){ animation-delay:.19s; }
+.card:nth-child(4){ animation-delay:.26s; }
+@keyframes rise{ to{ opacity:1; transform:none; } }
+
+.card-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.card-title{ display:flex; align-items:baseline; gap:10px; }
+.card-short{
+  font-family:"Saira Condensed",sans-serif; font-weight:900; font-size:30px; line-height:1;
+  color:var(--accent); letter-spacing:.02em;
+}
+.card-label{
+  font-weight:700; text-transform:uppercase; letter-spacing:.16em; font-size:12px; color:var(--ink-dim);
+}
+.card-leader{ text-align:right; line-height:1.05; max-width:55%; }
+.leader-name{ font-weight:700; font-size:14px; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.leader-tag{ font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--ink-faint); }
+
+.race{ position:relative; width:100%; }
+
+/* a single racing bar — 3-col grid: rank | bar-area | value column */
+.bar{
+  position:absolute; left:0; top:0; height:calc(var(--row-h) - 6px);
+  width:100%; display:grid; grid-template-columns:20px 1fr 58px;
+  align-items:center; gap:8px; will-change:transform; contain:layout style;
+}
+.bar-rank{
+  font-family:"Saira Condensed",sans-serif; font-weight:800; font-size:13px;
+  color:var(--ink-faint); text-align:right;
+}
+.bar-area{ position:relative; height:100%; }
+.bar-track{ position:absolute; left:0; top:0; height:100%; width:var(--w,2%); min-width:2px;
+  border-radius:4px;
+  background:linear-gradient(90deg, color-mix(in srgb, var(--c) 82%, #000) 0%, var(--c) 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); }
+.bar-name{
+  position:absolute; left:10px; top:50%; transform:translateY(-50%);
+  font-weight:700; font-size:13.5px; color:#0a0d12; white-space:nowrap;
+  text-shadow:0 1px 0 rgba(255,255,255,.22); pointer-events:none;
+  max-width:calc(100% - 16px); overflow:hidden; text-overflow:ellipsis;
+}
+.bar-name.outside{ left:calc(var(--w,2%) + 8px); color:var(--ink); text-shadow:none; }
+.bar-val{
+  font-family:"Saira Condensed",sans-serif; font-weight:800; font-size:13.5px;
+  color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap; text-align:right;
+}
+
+/* pre-tracking overlay (steals/rebounds before they were recorded) */
+.gate{
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:8px; background:linear-gradient(180deg, rgba(10,13,18,.4), rgba(10,13,18,.75));
+  border-radius:10px; backdrop-filter:blur(2px); padding:20px;
+}
+.gate[hidden]{ display:none; }
+.gate-stat{ font-family:"Saira Condensed",sans-serif; font-weight:900; font-size:40px; color:var(--accent); line-height:1; }
+.gate-msg{ color:var(--ink-dim); font-weight:600; max-width:280px; font-size:14px; }
+
+/* ---------- footer ---------- */
+.footnote{ max-width:var(--maxw); margin:26px auto 40px; padding:0 24px; color:var(--ink-dim); }
+.footnote p{ margin:6px 0; font-size:13.5px; line-height:1.5; max-width:760px; }
+.footnote strong{ color:var(--ink); }
+.footnote .src{ color:var(--ink-faint); font-size:12.5px; }
+.footnote a{ color:var(--ink-dim); }
+
+/* ---------- AI caution popover ---------- */
+.caution-pop{ position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center;
+  background:rgba(4,6,9,.7); backdrop-filter:blur(3px); padding:20px; }
+.caution-pop[hidden]{ display:none; }
+.caution-card{ position:relative; max-width:560px; width:100%; background:#0d1a2b; border:1px solid #1c3350;
+  border-radius:14px; padding:26px 28px; color:#dfe8f3; box-shadow:0 30px 80px rgba(0,0,0,.6); }
+.caution-card h2{ font-family:"Saira Condensed",sans-serif; font-weight:800; font-size:22px; margin:0 0 14px; }
+.caution-card ul{ margin:0; padding-left:18px; }
+.caution-card li{ margin:8px 0; font-size:14px; line-height:1.5; }
+.caution-foot{ margin-top:16px; font-size:13px; color:#9fb3cc; }
+.caution-foot a{ color:#7fb0ff; }
+.caution-close{ position:absolute; top:12px; right:14px; background:none; border:none; color:#7e93ad;
+  font-size:26px; cursor:pointer; line-height:1; }
+.caution-close:hover{ color:#fff; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 920px){
+  .grid{ grid-template-columns:1fr; }
+  .year{ font-size:clamp(56px,18vw,96px); }
+  .topbar{ flex-direction:column; align-items:flex-start; gap:10px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .card{ animation:none; opacity:1; transform:none; }
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Climb &middot; NBA All-Time Leaders Race</title>
+<meta name="description" content="Four synchronized bar-chart races showing the NBA's all-time points, rebounds, assists and steals leaders accumulating season by season from 1947 to 2025.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">THE&nbsp;CLIMB</span>
+    <span class="brand-sub">NBA all-time leaders, season by season</span>
+  </div>
+  <div class="topbar-right">
+    <a class="source" href="methodology.html">Methodology &amp; sources</a>
+    <button id="aiCaution" class="ai-caution" type="button">AI caution</button>
+  </div>
+</header>
+
+<section class="clock" aria-label="season clock">
+  <button id="restart" class="transport restart" title="Restart" aria-label="Restart">&#x21BA;</button>
+  <button id="play" class="transport play" title="Play / pause" aria-label="Play or pause">&#10073;&#10073;</button>
+  <div class="year-wrap">
+    <div id="season" class="season">1946&ndash;47</div>
+    <div id="year" class="year">1947</div>
+    <input id="scrub" class="scrub" type="range" min="0" max="1000" value="0" step="1" aria-label="Scrub through seasons">
+  </div>
+  <div class="speeds" role="group" aria-label="Playback speed">
+    <button class="speed" data-speed="0.5">0.5&times;</button>
+    <button class="speed is-active" data-speed="1">1&times;</button>
+    <button class="speed" data-speed="2">2&times;</button>
+  </div>
+</section>
+
+<main id="grid" class="grid">
+  <!-- chart cards injected by app.js -->
+</main>
+
+<footer class="footnote">
+  <p>Bars show each player&rsquo;s <strong>running career total</strong> at the end of every season. Retired players hold their place and get chased down. A consistent color follows each athlete up the board.</p>
+  <p class="src">Data: <a href="https://www.basketball-reference.com/" target="_blank" rel="noopener">Basketball-Reference.com</a> season totals &middot; Rebounds recorded from 1950&ndash;51, steals from 1973&ndash;74.</p>
+</footer>
+
+<div id="caution" class="caution-pop" hidden>
+  <div class="caution-card">
+    <button class="caution-close" id="cautionClose" aria-label="Close">&times;</button>
+    <h2>How this was built &amp; what to double-check</h2>
+    <ul id="cautionList"></ul>
+    <p class="caution-foot">Built with AI assistance. Numbers are sourced and computed transparently &mdash; see the <a href="methodology.html">methodology</a>.</p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

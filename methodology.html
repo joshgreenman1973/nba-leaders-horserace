@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology &middot; The Climb</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@700;800;900&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .doc{ max-width:780px; margin:0 auto; padding:28px 24px 80px; }
+  .doc h1{ font-family:"Saira Condensed",sans-serif; font-weight:900; font-size:clamp(34px,6vw,54px);
+    line-height:.95; margin:6px 0 4px; }
+  .doc .lede{ color:var(--ink-dim); font-size:17px; line-height:1.55; margin:10px 0 26px; max-width:62ch; }
+  .doc h2{ font-family:"Saira Condensed",sans-serif; font-weight:800; font-size:24px;
+    margin:34px 0 10px; padding-top:18px; border-top:1px solid var(--line); }
+  .doc p, .doc li{ color:#c4cedb; font-size:15.5px; line-height:1.6; }
+  .doc ul{ padding-left:20px; } .doc li{ margin:7px 0; }
+  .doc a{ color:#9fc2ff; }
+  .doc code{ background:#121a24; border:1px solid var(--line); border-radius:5px; padding:1px 6px;
+    font-family:ui-monospace,Menlo,monospace; font-size:13px; color:#cfe0f5; }
+  .back{ display:inline-block; margin-bottom:8px; color:var(--ink-dim); text-decoration:none;
+    text-transform:uppercase; letter-spacing:.1em; font-size:12px; font-weight:700; }
+  .back:hover{ color:var(--ink); }
+  table{ border-collapse:collapse; width:100%; margin:12px 0; font-size:14.5px; }
+  th,td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); }
+  th{ color:var(--ink-dim); font-weight:700; text-transform:uppercase; letter-spacing:.06em; font-size:12px; }
+  td:last-child, th:last-child{ font-variant-numeric:tabular-nums; }
+  .pill{ display:inline-block; font-weight:700; font-size:12px; padding:2px 9px; border-radius:20px;
+    border:1px solid var(--line); color:var(--ink-dim); }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<main class="doc">
+  <a class="back" href="index.html">&larr; Back to the race</a>
+  <h1>Methodology &amp; sources</h1>
+  <p class="lede">Every bar in <strong>The Climb</strong> is a real, sourced number. This page documents exactly where the data comes from, how the running totals are built, and what the known limitations are. Nothing is a black box.</p>
+
+  <h2>What the charts show</h2>
+  <p>Four synchronized races track the NBA&rsquo;s <strong>all-time regular-season leaders</strong> in four counting stats. As the shared clock advances one season at a time, each bar is the player&rsquo;s <strong>cumulative career total</strong> through the end of that season. Retired players keep their final total and hold their place on the board until someone climbs past them.</p>
+  <ul>
+    <li><span class="pill">PTS</span> Points &mdash; from the 1946&ndash;47 season</li>
+    <li><span class="pill">REB</span> Total rebounds &mdash; from 1950&ndash;51</li>
+    <li><span class="pill">AST</span> Assists &mdash; from 1946&ndash;47</li>
+    <li><span class="pill">STL</span> Steals &mdash; from 1973&ndash;74</li>
+  </ul>
+
+  <h2>Source</h2>
+  <p>All figures are the official season totals published by <a href="https://www.basketball-reference.com/" target="_blank" rel="noopener">Basketball-Reference.com</a>, pulled from each season&rsquo;s totals page (e.g. <code>/leagues/NBA_2024_totals.html</code>, and <code>/leagues/BAA_1947_totals.html</code> for the league&rsquo;s first three seasons under its original name, the Basketball Association of America). One season&rsquo;s page lists every player&rsquo;s totals for that year; summing them in chronological order yields each player&rsquo;s running career total.</p>
+
+  <h2>How a running total is built</h2>
+  <ul>
+    <li>For each season from 1946&ndash;47 to 2024&ndash;25, every player&rsquo;s single-season total for the stat is read from that season&rsquo;s page.</li>
+    <li>Players are identified by their unique Basketball-Reference player ID (e.g. <code>jamesle01</code>), so totals accumulate correctly even for players with identical names or accented spellings.</li>
+    <li>A player <strong>traded mid-season</strong> appears on Basketball-Reference as one row per team plus a combined-total row (labeled <code>2TM</code>, <code>3TM</code>, or <code>TOT</code>). We keep only the combined row, so each season is counted exactly once.</li>
+    <li>Totals carry forward through seasons a player did not play, so retired legends stay on the board and get chased down rather than disappearing.</li>
+  </ul>
+
+  <h2>Verification</h2>
+  <p>The computed final (2024&ndash;25) all-time totals match Basketball-Reference exactly. A few anchors:</p>
+  <table>
+    <tr><th>Stat</th><th>All-time leader</th><th>Career total</th></tr>
+    <tr><td>Points</td><td>LeBron James</td><td>42,184</td></tr>
+    <tr><td>Rebounds</td><td>Wilt Chamberlain</td><td>23,924</td></tr>
+    <tr><td>Assists</td><td>John Stockton</td><td>15,806</td></tr>
+    <tr><td>Steals</td><td>John Stockton</td><td>3,265</td></tr>
+  </table>
+
+  <h2>Limitations &amp; honest caveats</h2>
+  <ul>
+    <li><strong>Regular season only.</strong> Playoff totals are not included.</li>
+    <li><strong>NBA/BAA only.</strong> Statistics a player accumulated in the rival ABA (1967&ndash;1976) are not part of these NBA career totals &mdash; this affects players like Julius Erving and Moses Malone.</li>
+    <li><strong>Stats began when the league began tracking them.</strong> Rebounds were not recorded before 1950&ndash;51 and steals not before 1973&ndash;74. Those early years are intentionally left blank, never zero-filled, and each chart only starts racing once its stat exists. Blocks and turnovers (also first tracked in 1973&ndash;74) are not shown here.</li>
+    <li><strong>Recency.</strong> Totals run through the completed 2024&ndash;25 season. Current standings will shift as active players keep accumulating.</li>
+    <li>Always spot-check any single figure against <a href="https://www.basketball-reference.com/" target="_blank" rel="noopener">Basketball-Reference</a> before citing it.</li>
+  </ul>
+
+  <h2>Build</h2>
+  <p>Data was scraped once into <code>data/raw_seasons.json</code> (25,171 player-seasons), then reduced to cumulative keyframes in <code>data/data.json</code> by a transparent script (<code>build.mjs</code>). The page is static HTML/CSS/JavaScript with no tracking and no external dependencies beyond the web fonts. Built with AI assistance; the data pipeline is open and reproducible.</p>
+</main>
+</body>
+</html>
