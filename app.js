@@ -11,7 +11,10 @@
 const DISPLAY = 20;            // bars shown per race
 const ROW = 28;               // px height of each bar row (keep in sync with --row-h)
 const MAX_BAR = 80;            // leader bar caps here (%) leaving a gutter for the value
-const SECONDS_PER_YEAR = 1.45; // base pace; scaled by speed control
+const SECONDS_PER_YEAR = 1.45; // base seconds per season; scaled by speed control
+// per-mode pace: the season per-game board reshuffles hard every year, so give
+// it more time per season to breathe; the cumulative views stay brisk.
+const PACE = { totals: 1.45, avg: 2.6, cavg: 1.45 };
 const HOLD_END = 2.6;          // seconds to linger on the final frame
 const EASE = 0.16;             // row-position easing toward target rank
 
@@ -205,7 +208,7 @@ function frame(now){
   last = now;
   if (playing){
     if (T < SPAN){
-      T += (dt / SECONDS_PER_YEAR) * speed;
+      T += (dt / (PACE[mode] || SECONDS_PER_YEAR)) * speed;
       if (T >= SPAN){ T = SPAN; endHold = HOLD_END; }
     } else if (endHold > 0){
       endHold -= dt;
