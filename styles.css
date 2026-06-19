@@ -138,14 +138,14 @@ body{
 .modebar-label{ text-transform:uppercase; letter-spacing:.18em; font-size:11px; font-weight:700; color:var(--ink-faint); }
 .modebar-hint{ color:var(--ink-dim); font-size:13px; font-weight:600; min-width:230px; }
 .mode-toggle{
-  display:flex; background:var(--panel); border:1px solid var(--line);
-  border-radius:10px; padding:4px; gap:4px;
+  display:flex; flex-wrap:wrap; justify-content:center; background:var(--panel);
+  border:1px solid var(--line); border-radius:10px; padding:4px; gap:4px;
 }
 .mode{
   font-family:"Saira Condensed",sans-serif; font-weight:800; cursor:pointer;
-  font-size:15px; letter-spacing:.02em; text-transform:uppercase;
-  color:var(--ink-dim); background:transparent; border:none; padding:9px 18px; border-radius:7px;
-  transition:color .15s, background .15s;
+  font-size:14.5px; letter-spacing:.02em; text-transform:uppercase;
+  color:var(--ink-dim); background:transparent; border:none; padding:9px 15px; border-radius:7px;
+  transition:color .15s, background .15s; white-space:nowrap;
 }
 .mode:hover{ color:var(--ink); }
 .mode.is-active{ color:#0b0e13; background:linear-gradient(180deg,#fff,#d4dde8); box-shadow:0 1px 8px rgba(120,170,255,.18); }

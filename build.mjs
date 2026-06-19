@@ -19,6 +19,7 @@ const FIRST = Math.min(...RAW.map(r => r.year));
 const LAST  = Math.max(...RAW.map(r => r.year));
 const KEEP = 24;          // keep anyone who ever reached top-24 (we display 20, +buffer for smooth enter/exit)
 const QUAL = 0.70;        // per-game qualifier: games >= 70% of the season's schedule
+const MINCAREER = 400;   // career-average qualifier: minimum career games to appear
 
 const STATS = [
   { key: 'pts', field: 'pts', label: 'Points',   short: 'PTS', accent: '#ffb01f', firstTracked: 1947 },
@@ -74,13 +75,38 @@ for (const S of STATS) {
     for (const r of (byYear.get(y) || [])) {
       const g = r.g || 0;
       if (g >= minG) {
-        const avg = Math.round(((r[S.field] || 0) / g) * 10) / 10;
+        const avg = Math.round(((r[S.field] || 0) / g) * 100) / 100;  // 2dp for correct tie-breaking; shown as 1dp
         qualified.push([r.id, avg]);
         if (!aSeries.has(r.id)) aSeries.set(r.id, new Array(span).fill(null));
         aSeries.get(r.id)[idx] = avg;
       }
     }
     for (const [id] of qualified.sort((a,b)=>b[1]-a[1]).slice(0, KEEP)) aEver.add(id);
+  }
+
+  /* ---------- CAVG (running career per-game average) ---------- */
+  // Cumulative career total / cumulative career games (within the stat's era),
+  // updated each season. Cumulative, so it climbs slowly and holds after a
+  // player retires. Requires MINCAREER career games to appear (mirrors the
+  // minimum on official career rate-stat leaderboards) so small samples don't
+  // top the board.
+  const cumS = new Map(), cumG = new Map(), cSeries = new Map(), cEver = new Set();
+  for (let y = start; y <= LAST; y++) {
+    for (const r of (byYear.get(y) || [])) {
+      cumS.set(r.id, (cumS.get(r.id) || 0) + (r[S.field] || 0));
+      cumG.set(r.id, (cumG.get(r.id) || 0) + (r.g || 0));
+    }
+    const idx = y - start;
+    const ranked = [];
+    for (const [id, g] of cumG) {
+      if (!cSeries.has(id)) cSeries.set(id, new Array(span).fill(null));
+      if (y >= Math.max(debutOf.get(id), start) && g >= MINCAREER) {
+        const cavg = Math.round((cumS.get(id) / g) * 100) / 100;  // 2dp for tie-breaking; carries forward after retirement
+        cSeries.get(id)[idx] = cavg;
+        ranked.push([id, cavg]);
+      }
+    }
+    for (const [id] of ranked.sort((a,b)=>b[1]-a[1]).slice(0, KEEP)) cEver.add(id);
   }
 
   // emit
@@ -97,10 +123,11 @@ for (const S of STATS) {
     label: S.label, short: S.short, accent: S.accent, firstYear: start, lastYear: LAST,
     totals: mk(tEver, tSeries, true),
     avg:    mk(aEver, aSeries, false),
+    cavg:   mk(cEver, cSeries, true),
   };
 
-  const t5 = [...tEver].map(id => [nameOf.get(id), tSeries.get(id)[span-1]]).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  console.log(`${S.label.padEnd(9)} totals kept=${tEver.size} (${t5.map(([n,v])=>`${n} ${v}`).join(', ')}) | avg kept=${aEver.size}`);
+  const c5 = [...cEver].map(id => [nameOf.get(id), cSeries.get(id)[span-1]]).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  console.log(`${S.label.padEnd(9)} totals kept=${tEver.size} | avg kept=${aEver.size} | career-avg kept=${cEver.size} (${c5.map(([n,v])=>`${n} ${v}`).join(', ')})`);
 }
 
 fs.writeFileSync(OUT, JSON.stringify(out));

@@ -82,14 +82,17 @@ class Race {
     this.players = d.players;
     this.series = d.series;
     this.ids = Object.keys(d.series);
-    this.cardLabel.innerHTML = `${this.stat.label} &middot; ${mode === 'avg' ? 'per game' : 'all-time'}`;
-    this.leaderTag.textContent = mode === 'avg' ? 'season per game' : 'career total';
+    const sub = { totals: 'all-time', avg: 'per game · season', cavg: 'per game · career' }[mode];
+    const tag = { totals: 'career total', avg: 'season per game', cavg: 'career per game' }[mode];
+    this.cardLabel.innerHTML = `${this.stat.label} &middot; ${sub}`;
+    this.leaderTag.textContent = tag;
     this.raceEl.innerHTML = '';
     this.rows = new Map();
     this.leaderName.textContent = '—';
   }
 
-  fmtVal(v){ return this.mode === 'avg' ? v.toFixed(1) : fmt.format(Math.round(v)); }
+  // totals are whole numbers; both per-game views show one decimal
+  fmtVal(v){ return this.mode === 'totals' ? fmt.format(Math.round(v)) : v.toFixed(1); }
 
   // value for a player at fractional year (Y + frac), interpolated between the
   // two bracketing seasons so bars flow continuously like a real horserace chart.
@@ -147,9 +150,9 @@ class Race {
       row.y += (targetY - row.y) * EASE;
       if (Math.abs(targetY - row.y) < 0.4) row.y = targetY;
       const w = Math.max(0.6, (v / maxV) * MAX_BAR);
-      // In the cumulative view, dim a player once the clock passes their final
-      // season — they've stopped climbing and are now just holding their total.
-      const retired = this.mode === 'totals' && this.players[id].last < Y;
+      // In the cumulative views (career totals / career per-game), dim a player
+      // once the clock passes their final season — their figure is now fixed.
+      const retired = this.mode !== 'avg' && this.players[id].last != null && this.players[id].last < Y;
       row.el.style.transform = `translate3d(0, ${row.y}px, 0)`;
       row.el.style.opacity = retired ? '0.55' : '1';
       row.el.classList.toggle('retired', retired);
@@ -189,10 +192,12 @@ const yearEl = $('#year'), seasonEl = $('#season'), scrub = $('#scrub'),
 const HINTS = {
   totals: 'running career sum, season by season',
   avg: 'each season’s per-game leaders, reshuffled yearly',
+  cavg: 'running career per-game average, climbs slowly',
 };
 const FOOT = {
   totals: 'Bars show each player’s <strong>running career total</strong> at the end of every season. Retired players hold their place and get chased down. A consistent color follows each athlete up the board.',
   avg: 'Bars show each player’s <strong>per-game average for that single season</strong> (season total ÷ games played), among players meeting a minimum games-played qualifier. The board reshuffles every year. A consistent color follows each athlete.',
+  cavg: 'Bars show each player’s <strong>running career per-game average</strong> (career total ÷ career games to date), updated every season, for players with at least 400 career games. Cumulative, so it climbs slowly and holds after retirement.',
 };
 
 function frame(now){
@@ -273,8 +278,8 @@ async function init(){
 
   const cautionBullets = [
     'Every number comes from official Basketball-Reference season totals — nothing is estimated or invented.',
-    '“Career totals” are cumulative through each season; “Per-game average” is that one season’s total divided by games played.',
-    'Per-game leaders require a minimum games-played qualifier (70% of the season’s schedule) so small samples can’t top the board — like the NBA’s own rate-stat rules.',
+    'Three views: “Career totals” is cumulative; “Per game · season” is one season’s total ÷ its games; “Per game · career” is career total ÷ career games to date.',
+    'Per-game (season) leaders need 70% of the season’s schedule in games; per-game (career) leaders need 400 career games — so small samples can’t top either board, like the NBA’s own rate-stat rules.',
     'Players traded mid-season are counted once, using their combined league total for that year.',
     'Rebounds begin at 1950–51 and steals at 1973–74 — the first seasons the NBA tracked them. Earlier years are intentionally blank, not zero-filled.',
     'Spot-check any figure against Basketball-Reference; current standings shift as active players keep accumulating.'
