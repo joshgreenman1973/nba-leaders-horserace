@@ -208,6 +208,30 @@ body{
 .race.smooth .bar-name{ transition:left .55s cubic-bezier(.25,.85,.3,1); }
 /* retired players (cumulative view): dimmed + slightly desaturated as they hold their total */
 .bar.retired .bar-track{ filter:saturate(.65); }
+
+/* two-way highlight: a player sitting on 2+ charts at once gets a twinned glow
+   (same on every board they're on) plus a small star riding the bar tip */
+.bar-flag{
+  position:absolute; right:6px; top:50%; z-index:3; pointer-events:none;
+  font-size:12px; line-height:1; color:#fff; opacity:0;
+  transform:translateY(-50%) scale(.4);
+  text-shadow:0 0 7px #fff, 0 0 13px var(--c);
+  transition:opacity .35s ease, transform .35s ease;
+}
+.bar.multi .bar-flag{ opacity:.95; animation:flag-twinkle 2.4s ease-in-out infinite; }
+.bar.multi .bar-track{ animation:multi-pulse 2.4s ease-in-out infinite; }
+@keyframes multi-pulse{
+  0%,100%{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.30), 0 0 9px -4px var(--c); }
+  50%    { box-shadow:inset 0 0 0 1px rgba(255,255,255,.70), 0 0 20px -2px var(--c); }
+}
+@keyframes flag-twinkle{
+  0%,100%{ opacity:.65; transform:translateY(-50%) scale(.9)  rotate(0deg); }
+  50%    { opacity:1;   transform:translateY(-50%) scale(1.1) rotate(90deg); }
+}
+@media (prefers-reduced-motion: reduce){
+  .bar.multi .bar-flag, .bar.multi .bar-track{ animation:none; }
+  .bar.multi .bar-track{ box-shadow:inset 0 0 0 1px rgba(255,255,255,.6), 0 0 14px -3px var(--c); }
+}
 .bar-name{
   position:absolute; left:10px; top:50%; transform:translateY(-50%);
   font-weight:700; font-size:13.5px; color:#0a0d12; white-space:nowrap;

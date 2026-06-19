@@ -36,6 +36,7 @@ class Race {
     this.firstYear = stat.firstYear;
     this.lastYear  = stat.lastYear;
     this.rows = new Map();
+    this.visibleIds = new Set();       // players currently in this race's top N
     this.build(mount);
     this.applyMode(mode);
   }
@@ -116,7 +117,7 @@ class Race {
     el.style.setProperty('--c', playerColor(id));
     el.innerHTML =
       `<span class="bar-rank"></span>` +
-      `<div class="bar-area"><div class="bar-track"></div><span class="bar-name">${this.players[id].name}</span></div>` +
+      `<div class="bar-area"><div class="bar-track"><span class="bar-flag" aria-hidden="true">✦</span></div><span class="bar-name">${this.players[id].name}</span></div>` +
       `<span class="bar-val"></span>`;
     this.raceEl.appendChild(el);
     row = { el, area: $('.bar-area', el), track: $('.bar-track', el), name: $('.bar-name', el),
@@ -127,7 +128,7 @@ class Race {
   }
 
   render(Y, frac, active){
-    if (!active){ this.gate.hidden = false; return; }
+    if (!active){ this.gate.hidden = false; this.visibleIds = new Set(); return; }
     this.gate.hidden = true;
 
     const scored = [];
@@ -167,6 +168,14 @@ class Race {
       const [id, v] = top[0];
       this.leaderName.textContent = `${this.players[id].name} · ${this.fmtVal(v)}`;
       this.leaderName.style.color = playerColor(id);
+    }
+    this.visibleIds = visible;
+  }
+
+  // Highlight players who are simultaneously on another chart right now.
+  applyMulti(multi){
+    for (const [id, row] of this.rows){
+      row.el.classList.toggle('multi', this.visibleIds.has(id) && multi.has(id));
     }
   }
 }
@@ -212,6 +221,13 @@ function paint(){
   yearEl.textContent = Y;
   seasonEl.textContent = seasonLabel(Y);
   for (const race of races) race.render(Y, frac, Y >= race.firstYear);
+  // cross-chart pass: who is on two or more boards at the same moment
+  const count = new Map();
+  for (const race of races)
+    for (const id of race.visibleIds) count.set(id, (count.get(id) || 0) + 1);
+  const multi = new Set();
+  for (const [id, c] of count) if (c >= 2) multi.add(id);
+  for (const race of races) race.applyMulti(multi);
 }
 
 function setPlaying(p){
