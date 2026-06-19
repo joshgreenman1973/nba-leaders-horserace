@@ -17,7 +17,7 @@ const OUT  = new URL('./data/data.json', import.meta.url);
 
 const FIRST = Math.min(...RAW.map(r => r.year));
 const LAST  = Math.max(...RAW.map(r => r.year));
-const KEEP = 18;          // keep anyone who ever reached top-18 (we display 12)
+const KEEP = 24;          // keep anyone who ever reached top-24 (we display 20, +buffer for smooth enter/exit)
 const QUAL = 0.70;        // per-game qualifier: games >= 70% of the season's schedule
 
 const STATS = [

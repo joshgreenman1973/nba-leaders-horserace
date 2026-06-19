@@ -8,7 +8,8 @@
    rank, take the top N, and ease bar positions for smooth overtakes.
    ============================================================ */
 
-const DISPLAY = 12;            // bars shown per race
+const DISPLAY = 20;            // bars shown per race
+const ROW = 28;               // px height of each bar row (keep in sync with --row-h)
 const MAX_BAR = 80;            // leader bar caps here (%) leaving a gutter for the value
 const SECONDS_PER_YEAR = 1.45; // base pace; scaled by speed control
 const HOLD_END = 2.6;          // seconds to linger on the final frame
@@ -67,7 +68,7 @@ class Race {
     this.leaderTag = $('.leader-tag', card);
     this.cardLabel = $('.card-label', card);
     this.gate = $('.gate', card);
-    this.raceEl.style.height = (DISPLAY * 30) + 'px';
+    this.raceEl.style.height = (DISPLAY * ROW) + 'px';
     if (this.firstYear > 1947){
       const word = this.stat.short === 'STL' ? 'Steals' : 'Rebounds';
       $('.gate-msg', card).textContent =
@@ -83,7 +84,6 @@ class Race {
     this.ids = Object.keys(d.series);
     this.cardLabel.innerHTML = `${this.stat.label} &middot; ${mode === 'avg' ? 'per game' : 'all-time'}`;
     this.leaderTag.textContent = mode === 'avg' ? 'season per game' : 'career total';
-    this.raceEl.classList.toggle('smooth', mode === 'avg'); // CSS-tween bar widths between seasons
     this.raceEl.innerHTML = '';
     this.rows = new Map();
     this.leaderName.textContent = '—';
@@ -91,21 +91,19 @@ class Race {
 
   fmtVal(v){ return this.mode === 'avg' ? v.toFixed(1) : fmt.format(Math.round(v)); }
 
-  // value for a player at fractional year (Y + frac)
+  // value for a player at fractional year (Y + frac), interpolated between the
+  // two bracketing seasons so bars flow continuously like a real horserace chart.
+  // Values are exact at every whole season (frac === 0); the scrubber snaps to
+  // whole seasons so a paused/inspected frame always reads a real figure.
   valueAt(id, Y, frac){
     const arr = this.series[id];
     const i = Y - this.firstYear;
     if (i < 0 || i >= arr.length) return 0;
-    // Per-game mode shows each season's REAL average — never interpolate between
-    // seasons (an in-between average is not a number any season actually had).
-    // Smoothness comes from CSS-transitioned bar growth + position easing.
-    if (this.mode === 'avg') return arr[i] == null ? 0 : arr[i];
-    // Cumulative totals genuinely grow continuously, so interpolate for smooth climb.
     const a = arr[i];
     const b = (i + 1 < arr.length) ? arr[i + 1] : a;
     if (a == null && b == null) return 0;
-    if (a == null) return (b || 0) * frac;   // debut season: grow from 0
-    if (b == null) return a;
+    if (a == null) return (b || 0) * frac;                          // enter: grow from 0
+    if (b == null) return this.mode === 'avg' ? a * (1 - frac) : a; // avg: fade out; totals: carry
     return a + (b - a) * frac;
   }
 
@@ -121,7 +119,7 @@ class Race {
       `<span class="bar-val"></span>`;
     this.raceEl.appendChild(el);
     row = { el, area: $('.bar-area', el), track: $('.bar-track', el), name: $('.bar-name', el),
-            rank: $('.bar-rank', el), val: $('.bar-val', el), y: (DISPLAY - 1) * 30, vis: false };
+            rank: $('.bar-rank', el), val: $('.bar-val', el), y: (DISPLAY - 1) * ROW, vis: false };
     el.style.transform = `translate3d(0, ${row.y}px, 0)`;
     this.rows.set(id, row);
     return row;
@@ -145,7 +143,7 @@ class Race {
       const [id, v] = top[r];
       visible.add(id);
       const row = this.ensureRow(id);
-      const targetY = r * 30;
+      const targetY = r * ROW;
       row.y += (targetY - row.y) * EASE;
       if (Math.abs(targetY - row.y) < 0.4) row.y = targetY;
       const w = Math.max(0.6, (v / maxV) * MAX_BAR);
@@ -254,7 +252,11 @@ async function init(){
 
   playBtn.addEventListener('click', () => setPlaying(!playing));
   restartBtn.addEventListener('click', () => { T = 0; endHold = 0; setPlaying(true); });
-  scrub.addEventListener('input', () => { T = (scrub.value / 1000) * SPAN; endHold = 0; paint(); });
+  scrub.addEventListener('input', () => {
+    T = (scrub.value / 1000) * SPAN;
+    if (mode === 'avg') T = Math.round(T);   // land on a real season so per-game figures are exact
+    endHold = 0; paint();
+  });
   scrub.addEventListener('pointerdown', () => setPlaying(false));
   for (const b of document.querySelectorAll('.speed')){
     b.addEventListener('click', () => {
