@@ -206,6 +206,8 @@ body{
 /* per-game mode shows discrete season values; CSS-tween the width so bars grow smoothly */
 .race.smooth .bar-track{ transition:width .55s cubic-bezier(.25,.85,.3,1); }
 .race.smooth .bar-name{ transition:left .55s cubic-bezier(.25,.85,.3,1); }
+/* retired players (cumulative view): dimmed + slightly desaturated as they hold their total */
+.bar.retired .bar-track{ filter:saturate(.65); }
 .bar-name{
   position:absolute; left:10px; top:50%; transform:translateY(-50%);
   font-weight:700; font-size:13.5px; color:#0a0d12; white-space:nowrap;

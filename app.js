@@ -148,8 +148,12 @@ class Race {
       row.y += (targetY - row.y) * EASE;
       if (Math.abs(targetY - row.y) < 0.4) row.y = targetY;
       const w = Math.max(0.6, (v / maxV) * MAX_BAR);
+      // In the cumulative view, dim a player once the clock passes their final
+      // season — they've stopped climbing and are now just holding their total.
+      const retired = this.mode === 'totals' && this.players[id].last < Y;
       row.el.style.transform = `translate3d(0, ${row.y}px, 0)`;
-      row.el.style.opacity = '1';
+      row.el.style.opacity = retired ? '0.55' : '1';
+      row.el.classList.toggle('retired', retired);
       row.area.style.setProperty('--w', w + '%');
       row.rank.textContent = r + 1;
       row.val.textContent = this.fmtVal(v);

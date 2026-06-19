@@ -36,11 +36,12 @@ for (const r of RAW) {
 const schedule = new Map();
 for (const [y, recs] of byYear) schedule.set(y, Math.max(...recs.map(r => r.g || 0)));
 
-const nameOf = new Map(), debutOf = new Map();
+const nameOf = new Map(), debutOf = new Map(), lastOf = new Map();
 for (let y = FIRST; y <= LAST; y++) {
   for (const r of (byYear.get(y) || [])) {
     nameOf.set(r.id, r.name);
     if (!debutOf.has(r.id)) debutOf.set(r.id, y);
+    lastOf.set(r.id, y);   // final season the player appears in the data
   }
 }
 
@@ -86,7 +87,7 @@ for (const S of STATS) {
   const mk = (everSet, series, withDebut) => {
     const players = {}, ser = {};
     for (const id of everSet) {
-      players[id] = withDebut ? { name: nameOf.get(id), debut: debutOf.get(id) } : { name: nameOf.get(id) };
+      players[id] = withDebut ? { name: nameOf.get(id), debut: debutOf.get(id), last: lastOf.get(id) } : { name: nameOf.get(id) };
       ser[id] = series.get(id);
     }
     return { players, series: ser, kept: everSet.size };
