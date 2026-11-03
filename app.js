@@ -280,7 +280,7 @@ async function init(){
   });
 
   const cautionBullets = [
-    'Every number comes from official Basketball-Reference season totals — nothing is estimated or invented.',
+    'Every number comes from official Basketball-Reference season totals.',
     'Three views: “Career totals” is cumulative; “Per game · season” is one season’s total ÷ its games; “Per game · career” is career total ÷ career games to date.',
     'Per-game (season) leaders need 70% of the season’s schedule in games; per-game (career) leaders need 400 career games — so small samples can’t top either board, like the NBA’s own rate-stat rules.',
     'Players traded mid-season are counted once, using their combined league total for that year.',
